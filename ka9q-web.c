@@ -748,6 +748,10 @@ static void *audio_thread(void *arg) {
       }
       continue;  // Reuse current buffer
     }
+    // Debug: print info about received audio packet
+    fprintf(stderr, "audio_thread: received audio packet of %d bytes\n", size);
+
+
     if(size <= RTP_MIN_SIZE)
       continue; // Must be big enough for RTP header and at least some data
 
