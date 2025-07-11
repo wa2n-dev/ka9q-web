@@ -375,8 +375,10 @@ onion_connection_status websocket_cb(void *data, onion_websocket * ws,
         token=strtok(NULL,":");
         if(strcmp(token,"START")==0) {
           sp->audio_active=true;
+          fprintf(stderr, "websocket_cb: Audio streaming started for SSRC %d\n", sp->ssrc);
         } else if(strcmp(&tmp[2],"STOP")==0) {
           sp->audio_active=false;
+          fprintf(stderr, "websocket_cb: Audio streaming stopped for SSRC %d\n", sp->ssrc);
         }
         break;
       case 'F':
@@ -771,7 +773,9 @@ static void *audio_thread(void *arg) {
         int r=onion_websocket_write(sp->ws,(const char *)(pkt->content),size);
         pthread_mutex_unlock(&sp->ws_mutex);
         if(r<=0) {
-          fprintf(stderr,"%s: write failed: %d\n",__FUNCTION__,r);
+          fprintf(stderr,"audio_thread: write failed for SSRC %d: %d\n", pkt->rtp.ssrc, r);
+        } else {
+          fprintf(stderr,"audio_thread: wrote %d bytes to SSRC %d\n", size, pkt->rtp.ssrc);
         }
       }
       pthread_mutex_unlock(&session_mutex);

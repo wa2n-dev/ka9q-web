@@ -669,20 +669,25 @@
 
     async function audio_start_stop()
     {
-        var btn = document.getElementById("audio_button");
-        if(btn.value==="START") {
-          btn.value = "STOP";
-          btn.innerHTML = "Stop Audio";
-          ws.send("A:START:"+ssrc.toString());
-          player.resume();
-          // Ensure volume is set after resuming audio context
-          const volumeSlider = document.getElementById('volume_control');
-          if (volumeSlider) setPlayerVolume(volumeSlider.value);
-        } else {
-          btn.value = "START";
-          btn.innerHTML = "Start Audio";
-          ws.send("A:STOP:"+ssrc.toString());
-        }
+    var btn = document.getElementById("audio_button");
+    if(btn.value==="START") {
+        btn.value = "STOP";
+        btn.innerHTML = "Stop Audio";
+        ws.send("A:START:"+ssrc.toString());
+        player.resume();
+        // Ensure volume is set after resuming audio context
+        const volumeSlider = document.getElementById('volume_control');
+        if (volumeSlider) setPlayerVolume(volumeSlider.value);
+        console.log("Audio streaming started for SSRC:", ssrc);
+        // Show feedback to user
+        document.getElementById("info").textContent = "Audio streaming started.";
+    } else {
+        btn.value = "START";
+        btn.innerHTML = "Start Audio";
+        ws.send("A:STOP:"+ssrc.toString());
+        console.log("Audio streaming stopped for SSRC:", ssrc);
+        document.getElementById("info").textContent = "Audio streaming stopped.";
+    }
     }
 
 function updateRangeValues(){
@@ -1454,6 +1459,8 @@ function toggleAudioRecording() {
   } else {
       player.startRecording();
       document.getElementById('toggleRecording').innerText = 'Stop Recording';
+      console.log("Audio recording started.");
+      document.getElementById("info").textContent = "Audio recording started.";
   }
 
     isRecording = !isRecording;
