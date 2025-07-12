@@ -748,8 +748,6 @@ static void *audio_thread(void *arg) {
       }
       continue;  // Reuse current buffer
     }
-    // Debug: print info about received audio packet
-    fprintf(stderr, "audio_thread: received audio packet of %d bytes\n", size);
 
 
     if(size <= RTP_MIN_SIZE)
@@ -771,6 +769,7 @@ static void *audio_thread(void *arg) {
 //fprintf(stderr,"%s: sp=%p ssrc=%d\n",__FUNCTION__,sp,pkt->rtp.ssrc);
     if(sp!=NULL) {
       if(sp->audio_active) {
+        fprintf(stderr, "audio_thread: received audio packet of %d bytes\n", size); // Debug: print info about received audio packet
         //fprintf(stderr,"forward RTP: ws=%p ssrc=%d\n",sp->ws,pkt->rtp.ssrc);
         pthread_mutex_lock(&sp->ws_mutex);
         onion_websocket_set_opcode(sp->ws,OWS_BINARY);
